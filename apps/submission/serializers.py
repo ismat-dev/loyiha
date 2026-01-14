@@ -19,20 +19,20 @@ class AnswerSerializer(serializers.ModelSerializer):
         fields = ['id', 'submission', 'question', 'selected_option']
         read_only_fields = ['answer_at']
 
-def validate(self, attrs):
-    submission = attrs['submission']
+        def validate(self, attrs):
+            submission = attrs['submission']
 
-    if submission.student != self.context['request'].user:
-        raise serializers.ValidationError("Siz bu submission uchun javob bera olmaysiz.")
+            if submission.student != self.context['request'].user:
+                raise serializers.ValidationError("Siz bu submission uchun javob bera olmaysiz.")
 
-    if submission.status != 'in_progress':
-        raise serializers.ValidationError("Submission allaqachon topshirilgan.")
+            if submission.status != 'in_progress':
+                raise serializers.ValidationError("Submission allaqachon topshirilgan.")
 
-    end_time = submission.started_at + submission.test.duration_minutes
-    if timezone.now() > end_time:
-        raise serializers.ValidationError("Test vaqti tugagan.")
-    
-    return attrs
+            end_time = submission.started_at + submission.test.duration_minutes
+            if timezone.now() > end_time:
+                raise serializers.ValidationError("Test vaqti tugagan.")
+            
+            return attrs
     
 # submit
 class SubmissionSubmitSerializer(serializers.ModelSerializer):
